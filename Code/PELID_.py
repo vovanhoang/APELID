@@ -1,10 +1,40 @@
+
+from fileinput import filename
+from gc import enable
+import sys
+from matplotlib.pyplot import axis
 import pandas as pd
-import numpy as np
-from sklearn.ensemble import GradientBoostingClassifier, BaggingClassifier
-from xgboost import XGBClassifier
-from tensorflow import keras
-from ax import optimize
+from sklearn.model_selection import KFold
+from sklearn.ensemble import GradientBoostingClassifier
+import xgboost as xgb
+from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
+from sklearn.metrics import f1_score, recall_score, precision_score, accuracy_score, roc_auc_score, auc, roc_curve
+import warnings
+import pickle
+warnings.filterwarnings("ignore")
+from fastai.tabular.all import *
+import subprocess
+import tensorflow as tf
+import torch
+
+torch.backends.cudnn.benchmark = True
+
+###################
+#setting GPU Mem
+os.environ['TF_XLA_FLAGS'] = '--tf_xla_enable_xla_devices'
+gpus = tf.config.experimental.list_physical_devices('GPU')
+if gpus:
+    try:
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+    except RuntimeError as e:
+        print(e)
+if torch.cuda.is_available():
+    print("GPU enabling...")
+    torch.cuda.device('cuda')
+else:
+    print("No GPU")
 
 # Load test data
 test_data = pd.read_csv('test.csv')
